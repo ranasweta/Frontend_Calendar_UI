@@ -3,10 +3,11 @@ import { ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
 import { CalendarHero } from "./CalendarHero";
 import { CalendarGrid } from "./CalendarGrid";
 import { NotesPanel } from "./NotesPanel";
-import { isSameDay } from "@/lib/calendarUtils";
+import { dateKey } from "@/lib/calendarUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { useCalendarNotes } from "@/hooks/useCalendarNotes";
 
 export function WallCalendar() {
   const today = new Date();
@@ -19,6 +20,7 @@ export function WallCalendar() {
   const isMobile = useIsMobile();
   const { isDark, toggle: toggleDark } = useDarkMode();
   const { getEventsForDate, addEvent, removeEvent } = useCalendarEvents();
+  const { hasNote } = useCalendarNotes();
 
   const goNext = useCallback(() => {
     setDirection(1);
@@ -122,6 +124,7 @@ export function WallCalendar() {
           onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
           getEventsForDate={getEventsForDate}
+          hasNoteForDate={hasNote}
           onAddEvent={addEvent}
           onRemoveEvent={removeEvent}
         />

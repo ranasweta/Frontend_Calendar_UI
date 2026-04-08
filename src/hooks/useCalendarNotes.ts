@@ -24,8 +24,20 @@ export function useCalendarNotes() {
   );
 
   const setNote = useCallback((key: string, value: string) => {
-    setNotes((prev) => ({ ...prev, [key]: value }));
+    const normalized = value.trim();
+    setNotes((prev) => {
+      if (!normalized) {
+        const { [key]: _removed, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [key]: value };
+    });
   }, []);
 
-  return { getNote, setNote };
+  const hasNote = useCallback(
+    (key: string) => Boolean(notes[key]?.trim()),
+    [notes]
+  );
+
+  return { getNote, setNote, hasNote };
 }

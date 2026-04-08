@@ -24,6 +24,7 @@ interface CalendarGridProps {
   onDragMove: (date: Date) => void;
   onDragEnd: () => void;
   getEventsForDate: (key: string) => CalendarEvent[];
+  hasNoteForDate: (key: string) => boolean;
   onAddEvent: (dateKey: string, title: string, color: string) => void;
   onRemoveEvent: (id: string) => void;
 }
@@ -39,6 +40,7 @@ export function CalendarGrid({
   onDragMove,
   onDragEnd,
   getEventsForDate,
+  hasNoteForDate,
   onAddEvent,
   onRemoveEvent,
 }: CalendarGridProps) {
@@ -74,7 +76,8 @@ export function CalendarGrid({
           onTouchEnd={onDragEnd}
         >
           {days.map((day, i) => {
-            const events = getEventsForDate(dateKey(day.date));
+            const key = dateKey(day.date);
+            const events = getEventsForDate(key);
             return (
               <DateCell
                 key={i}
@@ -83,6 +86,7 @@ export function CalendarGrid({
                 isRangeEnd={!!isEnd(day.date)}
                 isInRange={!!inRange(day.date) && !isStart(day.date) && !isEnd(day.date)}
                 events={events}
+                hasNote={hasNoteForDate(key)}
                 isDragging={isDragging}
                 onDragStart={() => onDragStart(day.date)}
                 onDragMove={() => onDragMove(day.date)}
@@ -103,6 +107,7 @@ function DateCell({
   isRangeEnd,
   isInRange,
   events,
+  hasNote,
   isDragging,
   onDragStart,
   onDragMove,
@@ -114,6 +119,7 @@ function DateCell({
   isRangeEnd: boolean;
   isInRange: boolean;
   events: CalendarEvent[];
+  hasNote: boolean;
   isDragging: boolean;
   onDragStart: () => void;
   onDragMove: () => void;
@@ -164,6 +170,11 @@ function DateCell({
               <span className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary animate-pulse" />
             )}
           </span>
+          {hasNote && day.isCurrentMonth && (
+            <span className="pointer-events-none absolute right-1 top-0.5 text-xs font-bold leading-none text-primary" aria-hidden="true">
+              +
+            </span>
+          )}
           <EventDots events={events} />
         </button>
       </PopoverTrigger>

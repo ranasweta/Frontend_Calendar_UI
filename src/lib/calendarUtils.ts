@@ -9,7 +9,7 @@ export const MONTH_IMAGES: Record<number, string> = {
   0: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=800&h=400&fit=crop",
   1: "https://images.unsplash.com/photo-1457269449834-928af64c684d?w=800&h=400&fit=crop",
   2: "https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=800&h=400&fit=crop",
-  3: "https://images.unsplash.com/photo-1462275646964-a0e3c11f18a6?w=800&h=400&fit=crop",
+  3: "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1200&h=500&fit=crop&auto=format&q=80",
   4: "https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?w=800&h=400&fit=crop",
   5: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=400&fit=crop",
   6: "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=800&h=400&fit=crop",
