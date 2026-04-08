@@ -22,22 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Environment files
-.env
-.env.*
-!.env.example
-
-# Test and coverage output
-coverage
-.nyc_output
-playwright-report
-test-results
-blob-report
-
-# Build/tool caches
-.vite
-*.tsbuildinfo
-
-# Local tool output
-.lovable/

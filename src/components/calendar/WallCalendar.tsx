@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
 import { CalendarHero } from "./CalendarHero";
 import { CalendarGrid } from "./CalendarGrid";
 import { NotesPanel } from "./NotesPanel";
-import { dateKey } from "@/lib/calendarUtils";
+import { isSameDay } from "@/lib/calendarUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
@@ -20,7 +20,7 @@ export function WallCalendar() {
   const isMobile = useIsMobile();
   const { isDark, toggle: toggleDark } = useDarkMode();
   const { getEventsForDate, addEvent, removeEvent } = useCalendarEvents();
-  const { hasNote } = useCalendarNotes();
+  const { getNote, setNote, deleteNote } = useCalendarNotes();
 
   const goNext = useCallback(() => {
     setDirection(1);
@@ -81,7 +81,7 @@ export function WallCalendar() {
       </button>
 
       {/* Calendar Card */}
-      <div className="flex-1 overflow-hidden rounded-2xl bg-card shadow-xl shadow-black/5 ring-1 ring-border/50">
+      <div className="flex-1 rounded-2xl bg-card shadow-xl shadow-black/5 ring-1 ring-border/50 overflow-x-hidden">
         <CalendarHero month={currentMonth} year={currentYear} direction={direction} />
 
         {/* Navigation */}
@@ -124,9 +124,9 @@ export function WallCalendar() {
           onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
           getEventsForDate={getEventsForDate}
-          hasNoteForDate={hasNote}
           onAddEvent={addEvent}
           onRemoveEvent={removeEvent}
+          getNote={getNote}
         />
       </div>
 
@@ -148,6 +148,9 @@ export function WallCalendar() {
             setCurrentMonth(m);
             setCurrentYear(y);
           }}
+          getNote={getNote}
+          setNote={setNote}
+          deleteNote={deleteNote}
         />
       </div>
     </div>

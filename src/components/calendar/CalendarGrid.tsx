@@ -12,6 +12,7 @@ import {
 import { CalendarEvent } from "@/hooks/useCalendarEvents";
 import { EventDots, EventPopover } from "./EventMarker";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FileText } from "lucide-react";
 
 interface CalendarGridProps {
   month: number;
@@ -24,9 +25,9 @@ interface CalendarGridProps {
   onDragMove: (date: Date) => void;
   onDragEnd: () => void;
   getEventsForDate: (key: string) => CalendarEvent[];
-  hasNoteForDate: (key: string) => boolean;
   onAddEvent: (dateKey: string, title: string, color: string) => void;
   onRemoveEvent: (id: string) => void;
+  getNote: (key: string) => string;
 }
 
 export function CalendarGrid({
@@ -40,9 +41,9 @@ export function CalendarGrid({
   onDragMove,
   onDragEnd,
   getEventsForDate,
-  hasNoteForDate,
   onAddEvent,
   onRemoveEvent,
+  getNote,
 }: CalendarGridProps) {
   const days = getCalendarDays(year, month);
 
@@ -76,8 +77,8 @@ export function CalendarGrid({
           onTouchEnd={onDragEnd}
         >
           {days.map((day, i) => {
-            const key = dateKey(day.date);
-            const events = getEventsForDate(key);
+            const events = getEventsForDate(dateKey(day.date));
+            const note = typeof getNote === 'function' ? getNote(dateKey(day.date)) : "";
             return (
               <DateCell
                 key={i}
@@ -86,7 +87,7 @@ export function CalendarGrid({
                 isRangeEnd={!!isEnd(day.date)}
                 isInRange={!!inRange(day.date) && !isStart(day.date) && !isEnd(day.date)}
                 events={events}
-                hasNote={hasNoteForDate(key)}
+                note={note}
                 isDragging={isDragging}
                 onDragStart={() => onDragStart(day.date)}
                 onDragMove={() => onDragMove(day.date)}
@@ -107,7 +108,7 @@ function DateCell({
   isRangeEnd,
   isInRange,
   events,
-  hasNote,
+  note,
   isDragging,
   onDragStart,
   onDragMove,
@@ -119,7 +120,7 @@ function DateCell({
   isRangeEnd: boolean;
   isInRange: boolean;
   events: CalendarEvent[];
-  hasNote: boolean;
+  note: string;
   isDragging: boolean;
   onDragStart: () => void;
   onDragMove: () => void;
@@ -127,6 +128,8 @@ function DateCell({
   onRemoveEvent: (id: string) => void;
 }) {
   const selected = isRangeStart || isRangeEnd;
+  const hasNote = note.length > 0;
+  const hasEvents = events.length > 0;
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -155,7 +158,8 @@ function DateCell({
             isInRange && "bg-primary/10",
             isRangeStart && "rounded-l-full",
             isRangeEnd && "rounded-r-full",
-            (isRangeStart || isRangeEnd) && isInRange && "bg-primary/10"
+            (isRangeStart || isRangeEnd) && isInRange && "bg-primary/10",
+            hasNote && !selected && "bg-accent/40"
           )}
         >
           <span
@@ -170,10 +174,23 @@ function DateCell({
               <span className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary animate-pulse" />
             )}
           </span>
-          {hasNote && day.isCurrentMonth && (
-            <span className="pointer-events-none absolute right-1 top-0.5 text-xs font-bold leading-none text-primary" aria-hidden="true">
-              +
+          {/* Note indicator */}
+          {hasNote && (
+            <span className="absolute top-0.5 right-0.5 z-20">
+              <FileText className="h-2.5 w-2.5 text-primary/60" />
             </span>
+          )}
+          {/* Hover tooltip for notes */}
+          {hasNote && (
+            <div className="pointer-events-none absolute -top-2 left-1/2 z-50 -translate-x-1/2 -translate-y-full opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <div className="w-40 rounded-lg border border-border bg-popover p-2 shadow-lg">
+                <div className="flex items-start gap-1.5">
+                  <FileText className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
+                  <p className="text-xs text-foreground/80 line-clamp-3 whitespace-pre-wrap">{note}</p>
+                </div>
+              </div>
+              <div className="mx-auto h-2 w-2 -translate-y-0.5 rotate-45 border-b border-r border-border bg-popover" />
+            </div>
           )}
           <EventDots events={events} />
         </button>
